@@ -1,13 +1,67 @@
+@font-face {
+  font-family: "Inter";
+  src: local("Inter"),
+    url("../public/fonts/Inter-Regular.ttf") format("truetype");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: local("Inter"),
+    url("../public/fonts/Inter-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: local("Inter"), url("../public/fonts/Inter-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: local("Inter"), url("../public/fonts/Inter-Black.ttf") format("truetype");
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: "Ferry";
+  src: url("../public/fonts/Ferry/Ferry-Black.eot");
+  src: local("Ferry Black"), local("Ferry-Black"),
+    url("../public/fonts/Ferry/Ferry-Black.eot?#iefix")
+      format("embedded-opentype"),
+    url("../public/fonts/Ferry/Ferry-Black.woff") format("woff"),
+    url("../public/fonts/Ferry/Ferry-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+
+.slide {
+  /* border: 1px dotted red; */
+  box-sizing: border-box;
+  /* padding: 0 15px; */
+}
+
+.margin-15 {
+  margin: 20px 15px;
+  padding: 22px 20px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  min-height: 225px;
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  padding: 0;
+  font-family: "Inter", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-width: 375px;
+  overflow-x: hidden;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
