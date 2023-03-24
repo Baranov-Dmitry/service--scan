@@ -1,49 +1,99 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction, SerializedError } from "@reduxjs/toolkit";
+import { getFromLocalStorage, saveLocalStorage } from "../constants/helperFunctions";
 
-interface User {
+interface User extends AccessData, eventFiltersInfo {
   id: string,
   name: string,
-  image: string,
   countUsage: number,
   counterLimit: number,
+}
+
+export interface AccessData {
+  accessToken: string,
+  expire: string
+}
+
+export interface eventFiltersInfo {
+  eventFiltersInfo: {
+    usedCompanyCount: number,
+    companyLimit: number
+  } | undefined,
+  loadingInfo: 'idle' | 'pending' | 'succeeded' | 'failed',
+  error: undefined | string
 }
 
 const initialState: User = {
   id: "",
   name: "",
-  image: "",
   countUsage: 0,
   counterLimit: 0,
+  accessToken: "",
+  expire: "",
+  eventFiltersInfo: undefined,
+  loadingInfo: 'idle',
+  error: undefined
 }
 
-const mockAlex: User = {
-  id: "string",
-  name: "Алексей А.",
-  image: "./images/UserLogo.png",
-  countUsage: 34,
-  counterLimit: 100,
-}
+export const getFiltersInfoAsync = createAsyncThunk(
+  "auth/fetch",
+  async (accessToken: string,) => {
+
+    const url = 'https://gateway.scan-interfax.ru/api/v1/account/info'
+
+    const response = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + accessToken,
+      },
+    });
+
+    const data = await response.json()
+
+    return data;
+  }
+);
 
 export const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    id: "",
-    name: "",
-    image: "",
-    countUsage: 0,
-    counterLimit: 0,
-  },
+  initialState,
   reducers: {
-    logIn(state) {
-      state = { ...mockAlex }
+
+    logOut() {
+      localStorage.removeItem("accessData")
+      return initialState
     },
 
-    logOut(state) {
-      state = { ...initialState }
+    setToken(state, action: PayloadAction<{ accessToken: string, expire: string }>) {
+      state.accessToken = action.payload.accessToken
+      state.expire = action.payload.expire
+      saveLocalStorage("accessData", JSON.stringify(action.payload))
+      // getUserInfo(action.payload.accessToken, setInfo)
+    },
+
+    setInfo(state, action: PayloadAction<eventFiltersInfo>) {
+      state.eventFiltersInfo = action.payload.eventFiltersInfo
     }
-  }
+  },
+
+  extraReducers: (builder) => {
+    // Add reducers for additional action types here, and handle loading state as needed
+    builder.addCase(getFiltersInfoAsync.pending, (state) => {
+      state.loadingInfo = 'pending';
+    })
+    builder.addCase(getFiltersInfoAsync.fulfilled, (state, action: PayloadAction<{ eventFiltersInfo: { usedCompanyCount: number, companyLimit: number } }>) => {
+      return { ...state, eventFiltersInfo: { ...action.payload.eventFiltersInfo }, loadingInfo: 'succeeded' }
+    })
+    builder.addCase(getFiltersInfoAsync.rejected, (state, action) => {
+      if (
+        state.loadingInfo === 'pending'
+      ) {
+        state.loadingInfo = 'failed'
+        state.error = action.error.message
+      }
+    })
+  },
 })
 
-export const { logIn, logOut } = authSlice.actions
+export const { logOut, setToken, setInfo } = authSlice.actions
 
 export default authSlice.reducer

@@ -3,8 +3,12 @@ import styled, { css } from 'styled-components'
 import { BLUE, IMAGEPATH, ORANGE, TURQUOISE } from '../../constants/valiables'
 import { adaptiveSize } from '../../constants/helperFunctions';
 import Carousel from '../../components/carousel/Carousel';
+import { useAppSelector } from '../../store/hooks';
+import { NavLink } from 'react-router-dom';
 
 const Main = () => {
+
+  const accessToken = useAppSelector(state => state.auth.accessToken)
 
   return (
     <>
@@ -20,7 +24,7 @@ const Main = () => {
             Комплексный анализ публикаций, получение данных <br />
             в формате PDF на электронную почту.
           </Text>
-          <ButtonRequest>
+          <ButtonRequest to="/search">
             Запросить данные
           </ButtonRequest>
         </TextContainer>
@@ -44,7 +48,7 @@ const Main = () => {
                 Для небольшого исследования
               </TariffsSingleTitleSmall>
             </TariffsSingleTitle>
-            <TariffSingleDetails showBorder={true}>
+            <TariffSingleDetails showBorder={accessToken.length ? true : false}>
               <TariffSinglePrice>
                 <TariffSinglePriceCurrent>799 ₽</TariffSinglePriceCurrent>
                 <TariffSinglePriceSalesLess>1 200 ₽</TariffSinglePriceSalesLess>
@@ -60,8 +64,8 @@ const Main = () => {
                   <li>Поддержка 24/7</li>
                 </ul>
               </TariffSingleContains>
-              <TariffSingleButton isActive={true}>
-                Перейти в личный кабинет
+              <TariffSingleButton isActive={accessToken.length ? true : false}>
+                {accessToken.length ? "Перейти в личный кабинет" : "Подробнее"}
               </TariffSingleButton>
             </TariffSingleDetails>
           </TariffsSingle>
@@ -180,6 +184,10 @@ const TariffSingleButton = styled.div<{ isActive?: boolean }>`
   font-size: 20px;
   line-height: 24px;
   margin-top: 50px;
+
+  &:hover {
+    cursor: pointer;
+  }
 
   @media (max-width: 500px) {
     width: 286px;
@@ -305,7 +313,11 @@ const TariffTitle = styled.div`
 
 const TariffsContainer = styled.div`
   max-width: 1320px;
-  margin: 0 auto;
+  margin: 0 auto 110px;
+  
+  @media (max-width: 500px) {
+    margin-bottom: 40px;
+  }
 `
 
 const BGMainBottom = styled.div`
@@ -370,7 +382,7 @@ const FeaturedTitle = styled.div`
   }
 `
 
-const ButtonRequest = styled.button`
+const ButtonRequest = styled(NavLink)`
   width: 335px;
   height: 59px;
   background: ${BLUE};
@@ -384,6 +396,13 @@ const ButtonRequest = styled.button`
   line-height: 27px;
   letter-spacing: 0.01em;
   color: #FFFFFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  &:hover {
+    cursor: pointer;
+  }
 
   @media (max-width: 750px) {
     margin-top: 32px;

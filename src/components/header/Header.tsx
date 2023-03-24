@@ -1,23 +1,42 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { NavLink } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
 import styled, { css } from 'styled-components'
-import { GREEN, TURQUOISE } from '../../constants/valiables'
+import { GREEN, IMAGEPATH, TURQUOISE } from '../../constants/valiables'
+import { logOut } from '../../redusers/authSlice'
+import { useAppSelector } from '../../store/hooks'
+
+interface MenuItem {
+  name: string,
+  link: string
+}
 
 const Header = () => {
 
-  const [login, setLogin] = useState(false)
+  const authData = useAppSelector((state) => state.auth)
   const [isOpen, setIsOpen] = useState(false)
   const nodeRef = useRef<HTMLDivElement>(null);
 
-  const itemsMenu = ["Главная", "Тарифы", "FAQ"]
+  const itemsMenu = [
+    { name: "Главная", link: "/" },
+    { name: "Тарифы", link: "/" },
+    { name: "FAQ", link: "/" },
+  ]
+
+  const handeClose = useCallback(() => {
+    setIsOpen(prev => !prev)
+  }, [],)
 
   return (
     <>
       <HeaderWrap>
         <LeftContent>
-          <Logo />
+          <NavLink to="/">
+            <Logo />
+          </NavLink>
           <Menu>
-            <GetMenuItems items={itemsMenu} />
+            <GetMenuItems items={itemsMenu} popUp={true} />
           </Menu>
           <ButtonMobileMenu
             isOpen={isOpen}
@@ -29,24 +48,15 @@ const Header = () => {
           </ButtonMobileMenu>
         </LeftContent>
         <ContainerLoginRegister>
-          {login
-            ? <>
-              <Stats>
-                <Use>Использовано компаний <span>34</span></Use>
-                <Limit>Лимит по компаниям <span>100</span></Limit>
-              </Stats>
-              <User>
-                <ContainerFlex>
-                  <Name>Алексей А.</Name>
-                  <UserLogOut onClick={() => setLogin(prev => !prev)}>Выйти</UserLogOut>
-                </ContainerFlex>
-                <img src="./images/UserLogo.png" alt="Logo" />
-              </User>
-            </>
+          {authData.loadingInfo === 'pending' || authData.loadingInfo === 'succeeded'
+            ? <UserHeaderData
+              companyLimit={authData.eventFiltersInfo?.companyLimit}
+              usedCompanyCount={authData.eventFiltersInfo?.usedCompanyCount}
+              loading={authData.loadingInfo === 'pending' ? true : false} />
             : <>
               <Register>Зарегистрироваться</Register>
               <GreenLine />
-              <Login onClick={() => setLogin(prev => !prev)}>Войти</Login>
+              <Login to="/auth">Войти</Login>
             </>
           }
         </ContainerLoginRegister>
@@ -70,23 +80,86 @@ const Header = () => {
             </ButtonMobileMenu>
           </ContainerFlexRow>
           <MenuInPopUp>
-            <GetMenuItems items={itemsMenu} />
+            <GetMenuItems items={itemsMenu} handeClose={handeClose} />
           </MenuInPopUp>
-          <Register>Зарегистрироваться</Register>
-          <Login onClick={() => setLogin(prev => !prev)}>Войти</Login>
+          {authData.eventFiltersInfo !== undefined
+            ? <UserHeaderData {...authData.eventFiltersInfo} popUp={true} />
+            : <>
+              <Register>Зарегистрироваться</Register>
+              <Login to="/auth" onClick={handeClose}>Войти</Login>
+            </>
+          }
         </PopUpMenu>
       </CSSTransition>
     </>
   )
 }
 
-const GetMenuItems = ({ items }: { items: string[] }) => {
+interface UserHeaderDataProp { loading?: boolean, popUp?: boolean, usedCompanyCount?: number, companyLimit?: number }
+
+const UserHeaderData = ({ loading = false, popUp = false, usedCompanyCount, companyLimit, }: UserHeaderDataProp) => {
+
+  const dispatch = useDispatch()
+
   return (
     <>
-      {items.map(item => <li key={item}>{item}</li>)}
+      <Stats color={popUp ? "white" : "inherit"}>
+        {loading ? <Loading />
+          : <>
+            <Use>Использовано компаний <span>{usedCompanyCount}</span></Use>
+            <Limit>Лимит по компаниям <span>{companyLimit}</span></Limit>
+          </>
+        }
+      </Stats>
+      <User marginZero={popUp}>
+        <ContainerFlex>
+          <Name
+            color={popUp ? "white" : "rgba(0, 0, 0, 0.7);"}
+          >Алексей А.</Name>
+          <UserLogOut
+            colorBg={popUp ? "inherit" : "white"}
+            color={popUp ? "white" : "rgba(0, 0, 0, 0.7);"}
+            onClick={() => dispatch(logOut())}>
+            Выйти
+          </UserLogOut>
+        </ContainerFlex>
+        <img src="./images/UserLogo.png" alt="Logo" />
+      </User>
     </>
   )
 }
+
+const GetMenuItems = ({ items, popUp, handeClose }: { items: MenuItem[], popUp?: boolean, handeClose?: () => void }) => {
+  return (
+    <>
+      {items.map(item => <li key={item.name}><NavLinkSt color={!popUp ? "#fff" : "#000"} onClick={handeClose} to={item.link}>{item.name}</NavLinkSt></li>)}
+    </>
+  )
+}
+
+export const Loading = styled.div`
+  width: 24px;
+  height: 24px;
+  background-image: url(${IMAGEPATH + "speen.svg"});
+
+  animation-name: spin;
+  animation-duration: 500ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+
+  @keyframes spin { 
+    from { 
+        transform: rotate(0deg); 
+    } to { 
+        transform: rotate(360deg); 
+    }
+  }
+`
+
+const NavLinkSt = styled(NavLink)`
+  color: ${p => p.color};
+  text-decoration: none;
+`
 
 const MenuInPopUp = styled.ul`
   display: flex;
@@ -213,6 +286,7 @@ const PopUpMenu = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 10000;
 
   &.alert-enter {
     transform: translateX(100%);
@@ -227,6 +301,10 @@ const PopUpMenu = styled.div`
   &.alert-exit-active {
     transform: translateX(100%);
     transition: transform 0.5s ease;
+  }
+
+  @media (min-width: 779px) {
+    display: none;
   }
 `
 
@@ -243,24 +321,24 @@ const ContainerFlex = styled.div`
   margin-left: 4px;
 `
 
-const UserLogOut = styled.button`
-  color: rgba(0, 0, 0, 0.4);
+const UserLogOut = styled.button<{ colorBg: string }>`
+  color: ${p => p.color};
   font-size: 10px;
   line-height: 12px;
   border: none;
   align-self: flex-end;
-  background-color: white;
+  background-color: ${p => p.colorBg};
   margin-top: 3px;
   margin-right: -5px;
 `
 
 const Name = styled.div`
-  color: rgba(0, 0, 0, 0.7);
+  color: ${p => p.color};
   font-size: 14px;
   line-height: 17px;
 `
 
-const User = styled.div`
+const User = styled.div<{ marginZero: boolean }>`
   display: none;
   display: flex;
   margin-left: 125px;
@@ -273,10 +351,18 @@ const User = styled.div`
   @media (max-width: 1400px) {
     margin-left: 5vw;
   }
+
+  ${p => p.marginZero && css`
+    @media (max-width: 778px) {
+      margin-left: 0;
+      margin-top: 15px;
+    }
+  `}
   
 `
 
 const Stats = styled.div`
+  color: ${p => p.color};
   width: 175px;
   height: 63px;
   font-size: 10px;
@@ -341,12 +427,18 @@ const Register = styled.button`
   }
 `
 
-const Login = styled.button`
+const Login = styled(NavLink)`
   width: 65px;
   height: 26px;
   background: ${TURQUOISE};
   border-radius: 5px;
   border: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #000;
 
   @media (max-width: 778px) {
     width: 295px;
@@ -416,4 +508,4 @@ const Logo = styled.div`
   }
 `
 
-export default Header
+export default React.memo(Header)

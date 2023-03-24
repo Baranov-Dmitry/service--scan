@@ -34,7 +34,6 @@ const FooterLogo = styled.div`
 `
 
 const FooterContainer = styled.footer`
-  margin-top: 110px;
   padding-left: 60px;
   padding-right: 45px;
   height: 137px;
@@ -45,7 +44,6 @@ const FooterContainer = styled.footer`
   align-items: center;
 
   @media (max-width: 500px) {
-    margin-top: 43px;
     padding-left: 15px;
     padding-right: 15px;
   }
