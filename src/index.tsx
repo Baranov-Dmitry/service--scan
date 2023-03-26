@@ -12,9 +12,18 @@ import { AccessData, getFiltersInfoAsync, setToken } from './redusers/authSlice'
 const accessData = getFromLocalStorage("accessData") as (AccessData | undefined)
 
 if (accessData) {
-  console.log("index start store")
-  store.dispatch(setToken({ ...accessData }))
-  store.dispatch(getFiltersInfoAsync(accessData.accessToken))
+
+  if (new Date(accessData.expire).getTime() > Date.now()) {
+
+    store.dispatch(setToken({ ...accessData }))
+    store.dispatch(getFiltersInfoAsync(accessData.accessToken))
+
+  } else {
+
+    localStorage.removeItem("accessData")
+
+  }
+
 }
 
 const root = ReactDOM.createRoot(

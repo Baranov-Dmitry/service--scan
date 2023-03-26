@@ -11,19 +11,17 @@ import Search from './pages/search/Search';
 import { AccessData, getFiltersInfoAsync, setToken } from './redusers/authSlice';
 import { useAppDispatch, useAppSelector } from './store/hooks';
 
+const ProtectedRoute = ({ children, to, isNavigate }: { children: any, to: string, isNavigate: boolean }) => {
+  if (isNavigate) {
+    return <Navigate to={to} />;
+  } else {
+    return children;
+  }
+}
+
 function App() {
 
   const accessToken = useAppSelector(state => state.auth.accessToken)
-
-  const ProtectedRoute = ({ children, to, isNavigate }: { children: any, to: string, isNavigate: boolean }) => {
-    console.log("ProtectedRoute ", children, to, isNavigate)
-    if (isNavigate) {
-      console.log("navigate")
-      return <Navigate to={to} />;
-    } else {
-      return children;
-    }
-  }
 
   const routes: RouteObject[] = [
     {

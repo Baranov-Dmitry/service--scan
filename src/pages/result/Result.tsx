@@ -1,8 +1,10 @@
-import { Col, Row } from 'antd'
+import { Carousel, Col, Row } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import SeatchCarousel from '../../components/carousels/SeatchCarousel'
 import { Loading } from '../../components/header/Header'
+import ResultItem from '../../components/ResultItem/ResultItem'
 import { IMAGEPATH } from '../../constants/valiables'
 import { useAppSelector } from '../../store/hooks'
 import { SearchState } from '../search/Search'
@@ -12,7 +14,7 @@ interface AnalyticsIntervalPoint {
   value: number
 }
 
-interface AnalyticsHistogramData {
+export interface AnalyticsHistogramData {
   data: AnalyticsIntervalPoint[]
   histogramType: "totalDocuments" | "riskFactors"
 }
@@ -23,7 +25,7 @@ interface SearchResultItem {
   similarCount: number
 }
 
-interface ScanDoc {
+export interface ScanDoc {
   ok: {
     schemaVersion: string
     id: string
@@ -74,65 +76,6 @@ interface DocumentAttributes {
   wordCount: number
 }
 
-// const body = {
-//   "issueDateInterval": {
-//     "startDate": "2022-08-31",
-//     "endDate": "2022-08-31"
-//   },
-//   "searchContext": {
-//     "targetSearchEntitiesContext": {
-//       "targetSearchEntities": [
-//         {
-//           "type": "company",
-//           "sparkId": null,
-//           "entityId": null,
-//           "inn": 7710137066,
-//           "maxFullness": true,
-//           "inBusinessNews": null
-//         }
-//       ],
-//       "onlyMainRole": true,
-//       "tonality": "any",
-//       "onlyWithRiskFactors": false,
-//       "riskFactors": {
-//         "and": [],
-//         "or": [],
-//         "not": []
-//       },
-//       "themes": {
-//         "and": [],
-//         "or": [],
-//         "not": []
-//       }
-//     },
-//     "themesFilter": {
-//       "and": [],
-//       "or": [],
-//       "not": []
-//     }
-//   },
-//   "searchArea": {
-//     "includedSources": [],
-//     "excludedSources": [],
-//     "includedSourceGroups": [],
-//     "excludedSourceGroups": []
-//   },
-//   "attributeFilters": {
-//     "excludeTechNews": true,
-//     "excludeAnnouncements": true,
-//     "excludeDigests": true
-//   },
-//   "similarMode": "duplicates",
-//   "limit": 1000,
-//   "sortType": "sourceInfluence",
-//   "sortDirectionType": "desc",
-//   "intervalType": "month",
-//   "histogramTypes": [
-//     "totalDocuments",
-//     "riskFactors"
-//   ]
-// }
-
 const Result = () => {
 
   const accessToken = useAppSelector(state => state.auth.accessToken)
@@ -143,6 +86,8 @@ const Result = () => {
     posts: [],
     lastLoadedPost: 0
   })
+
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   const location = useLocation()
   const navigate = useNavigate()
@@ -199,6 +144,8 @@ const Result = () => {
       return
     }
 
+    setIsLoadingMore(prev => !prev)
+
     const start = posts.lastLoadedPost
     const end = (posts.lastLoadedPost + POSTSPERLOAD) < objectSearch.length ? posts.lastLoadedPost + POSTSPERLOAD : objectSearch.length
 
@@ -222,6 +169,8 @@ const Result = () => {
     } catch (error) {
       console.log("Error: ", error)
     }
+
+    setIsLoadingMore(prev => !prev)
 
   }
 
@@ -331,25 +280,18 @@ const Result = () => {
             <span>Риски</span>
           </ResultCaruselDetails>
           <ResultCaruselWrap>
-            {histogramData === null
-              ? <ResultCaruselLoading>
-                <Loading />
-                <span>Загружаем данные</span>
-              </ResultCaruselLoading>
-              : histogramData[0] === undefined
-                ? <Row justify="center" align="middle" style={{ width: "100%" }}>
-                  Постов не найдено
-                </Row>
-                : histogramData[0].data.map((dataFild, index) => {
-                  const date = new Date(dataFild.date).toLocaleDateString("en-US")
-                  // date.replaceAll("/", ".")
-                  return (<ResultCaruselItem key={dataFild.date}>
-                    <span>{date.replaceAll("/", ".")}</span>
-                    <span>{dataFild.value}</span>
-                    <span>{histogramData[1].data[index].value}</span>
-                  </ResultCaruselItem>)
-                })}
-
+            {
+              histogramData === null
+                ? <ResultCaruselLoading>
+                  <Loading />
+                  <span>Загружаем данные</span>
+                </ResultCaruselLoading>
+                : histogramData[0] === undefined
+                  ? <Row justify="center" align="middle" style={{ width: "100%" }}>
+                    Постов не найдено
+                  </Row>
+                  : <SeatchCarousel histogram={histogramData} />
+            }
           </ResultCaruselWrap>
 
         </ResultCarusel>
@@ -359,53 +301,28 @@ const Result = () => {
         <ResultListTitle>Список документов</ResultListTitle>
         <ResultList>
 
-          {posts.posts.map(post => {
-            if (post.hasOwnProperty("ok")) {
-              const typedPost = post as ScanDoc
-              return <ResultPostItem key={typedPost.ok.id} typedPost={typedPost} />
-            } else {
-              // fail post
-              return null
-            }
-          })}
+          {
+            posts.posts.map(post => {
+              if (post.hasOwnProperty("ok")) {
+                const typedPost = post as ScanDoc
+                return <ResultItem key={typedPost.ok.id} typedPost={typedPost} />
+              } else {
+                // fail post
+                return null
+              }
+            })
+          }
 
         </ResultList>
 
-        {isActiveLoadMore && <ButtonLoadMore onClick={loadMorePosts}>Показать больше</ButtonLoadMore>}
+        {isActiveLoadMore && <ButtonLoadMore onClick={loadMorePosts}>{isLoadingMore ? <Loading /> : "Показать больше"}</ButtonLoadMore>}
 
       </ResultListWrap>
     </ResultContainer>
   )
 }
 
-const ResultPostItem = React.memo(({ typedPost }: { typedPost: ScanDoc }) => {
 
-  const parser = new DOMParser();
-  const xmlDoc = parser.parseFromString(typedPost.ok.content.markup, "text/xml").documentElement.textContent ?? '';
-
-  return (
-    <ResultItem>
-      <ResultItemDetails>
-        <span>{new Date(typedPost.ok.issueDate).toLocaleDateString()}</span>
-        <span>{typedPost.ok.source.name}</span>
-      </ResultItemDetails>
-      <ResultItemTitle>{typedPost.ok.title.text}</ResultItemTitle>
-      <ResultItemTitleButton>
-        {
-          typedPost.ok.attributes.isAnnouncement ? "Сводки новостей" : ""
-            + typedPost.ok.attributes.isDigest ? "Анонс или календарь событий" : ""
-              + typedPost.ok.attributes.isTechNews ? "Технические новости" : ""
-        }
-      </ResultItemTitleButton>
-      <ResultItemImage image="11.png" />
-      <ResultItemText dangerouslySetInnerHTML={{ __html: xmlDoc }}></ResultItemText>
-      <Row justify="space-between" align="bottom" style={{ marginTop: "30px" }}>
-        <ResultItemButton to={typedPost.ok.url} target="_blank">Читать в источнике</ResultItemButton>
-        <WordCount>{typedPost.ok.attributes.wordCount} слова</WordCount>
-      </Row>
-    </ResultItem>
-  )
-})
 
 const fetchUrl = (url: string, body: {}, accessToken: string) => {
   return fetch(url, {
@@ -419,24 +336,15 @@ const fetchUrl = (url: string, body: {}, accessToken: string) => {
   })
 }
 
-const WordCount = styled.div`
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 19px;
-  letter-spacing: 0.02em;
-
-  color: #949494;
-`
-
 const ResultCaruselLoading = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
-
+  height: 100%;
+  text-align: center;
+  
   & div {
     width: 50px;
     height: 50px;
@@ -446,123 +354,28 @@ const ResultCaruselLoading = styled.div`
   & span {
     font-size: 18px;
   }
-`
 
-const ResultItemImage = styled.div<{ image: string }>`
-  width: 100%;
-  height: 158px;
-  background: url(${p => IMAGEPATH + p.image});
-  border-radius: 10px;
-  background-size: 100%;
-  margin-bottom: 20px;
-`
-
-const ResultItemText = styled.div`
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 19px;
-  letter-spacing: 0.02em;
-
-  & img {
-    max-width: 100%;
-  }
-
-  color: rgba(0,0,0,0.5);
-
-  & p {
-    margin: 20px 0;
+  @media (max-width: 600px) {
+    & span {
+      display: none;
+    }
   }
 `
 
-const ResultItemTitleButton = styled.div`
-  padding: 0 14px;
-  height: 22px;
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 15px;
-  letter-spacing: 0.02em;
-  color: #000000;
-  background: #FFB64F;
-  border-radius: 5px;
-  align-self: flex-start;
-  margin: 14px 0;
-  display: flex;
-  align-items: center;
-`
 
-const ResultItemTitle = styled.h4`
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 26px;
-  line-height: 31px;
-  letter-spacing: 0.02em;
-  color: #000000;
-  margin: 14px 0 0 0;
-`
-
-const ResultItemDetails = styled.div`
-  display: flex;
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 19px;
-  letter-spacing: 0.02em;
-  text-decoration-line: underline;
-  color: #949494;
-
-  & span:first-child {
-    margin-right: 10px;
-  }
-`
-
-const ResultItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  background: #FFFFFF;
-  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-  padding: 20px 30px 30px 30px;
-  width: calc(50% - 15px);
-  box-sizing: border-box;
-  overflow: hidden;
-`
 
 const ResultList = styled.div`
   display: flex;
   flex-direction: row;
   gap: 30px;
   flex-wrap: wrap;
-`
-
-const ResultItemButton = styled(Link)`
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 19px;
-  letter-spacing: 0.02em;
-  color: #000000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-
-  width: 223px;
-  height: 46px;
-  background: #7CE3E1;
-  border-radius: 5px;
-
-  border: none;
   
+  @media (max-width: 1300px) {
+    gap: 20px;
+  }
 
-  &:hover {
-    cursor: pointer;
+  @media (max-width: 900px) {
+    flex-direction: column;
   }
 `
 
@@ -580,6 +393,10 @@ const ButtonLoadMore = styled.button`
   background: #5970FF;
   border-radius: 5px;
   margin-top: 30px;
+
+  justify-content: center;
+  display: flex;
+  align-items: center;
 `
 
 const ResultListTitle = styled.h4`
@@ -633,17 +450,23 @@ const ResultCaruselItem = styled.div`
     height: calc(100% - 30px);
     background-color: rgba(148, 148, 148, 0.4);
   }
+
+  
 `
 
 const ResultCaruselWrap = styled.div`
-  width: calc(100% - 70px);
-  display: flex;
+  width: calc(100% - 136px);
+
+  @media (max-width: 500px) {
+    width: 100%;
+  }
 `
 
 const ResultCaruselDetails = styled.div`
   display: flex;
   flex-direction: column;
   background-color: #029491;
+  width: 130px;
 
   & span {
     padding: 17px 27px;
@@ -660,6 +483,26 @@ const ResultCaruselDetails = styled.div`
   & span:last-child {
     padding-bottom: 17px;
   }
+
+  @media (max-width: 500px) {
+    flex-direction: row;
+    width: 100%;
+    font-size: 18px;
+    line-height: 22px;
+    letter-spacing: 0.01em;
+    height: 75px;
+    align-self: center;
+    border-radius: 10px 10px 0 0;
+    margin-top: -2px;
+    justify-content: center;
+
+    & span {
+      font-size: 18px;
+      padding: 14px 16px 17.5px;
+      line-height: 45px;
+    }
+  }
+
 `
 
 const ResultCarusel = styled.div`
@@ -668,6 +511,10 @@ const ResultCarusel = styled.div`
   border: 2px solid #029491;
   border-radius: 10px;
   box-sizing: border-box;
+
+  @media (max-width: 500px) {
+    flex-direction: column;
+  }
 `
 
 const ResultTimelineDetails = styled.div`
@@ -679,6 +526,8 @@ const ResultTimelineDetails = styled.div`
   letter-spacing: 0.02em;
   color: #949494;
   margin-bottom: 15px;
+
+
 `
 
 const ResultTimelineTitle = styled.h2`
@@ -702,6 +551,21 @@ const ResultLogo = styled.div`
   
   margin-right: 45px;
   margin-top: 5px;
+
+  background-size: 100%;
+  background-repeat: no-repeat;
+
+  @media (max-width: 1300px) {
+    width: 400px;
+    height: 289px;
+    margin-right: 0;
+  }
+
+  @media (max-width: 500px) {
+    width: 345px;
+    height: 235px;
+  }
+  
 `
 
 const ResultTextTitleSmall = styled.h4`
@@ -712,6 +576,10 @@ const ResultTextTitleSmall = styled.h4`
   line-height: 24px;
   letter-spacing: 0.015em;
 
+  @media (max-width: 850px) {
+    font-size: 18px;
+    line-height: 22px;
+  }
 `
 
 const ResultTextTitle = styled.h1`
@@ -723,6 +591,14 @@ const ResultTextTitle = styled.h1`
   letter-spacing: 0.05em;
   margin-top: 46px;
   margin-bottom: 40px;
+
+  @media (max-width: 850px) {
+    font-size: 28px;
+    line-height: 34px;
+    letter-spacing: 0.01em;
+  }
+
+  
 `
 
 const ResultTextLogoContainer = styled.div`
@@ -731,6 +607,12 @@ const ResultTextLogoContainer = styled.div`
   justify-content: space-between;
 
   margin-bottom: -46px;
+
+  @media (max-width: 850px) {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0;
+  }
 `
 
 const ResultText = styled.div`
@@ -738,7 +620,7 @@ const ResultText = styled.div`
 `
 
 const ResultContainer = styled.div`
-  width: 1320px;
+  max-width: 1320px;
   margin: 0 auto
 `
 

@@ -185,12 +185,12 @@ const Search = () => {
           <InputsContainer>
 
             <InputContainer>
-              <Label htmlFor={id + "INN"}>ИНН компании <RedStar isError={search.inn.error}>*</RedStar></Label>
+              <Label htmlFor={id + "INN"}>ИНН компании <RedStar isError={search.inn.error ? 1 : 0}>*</RedStar></Label>
               <InputStyled
                 onChange={debounceHandleInn}
                 size='large' id={id + "INN"}
                 placeholder='10 цифр'
-                iserror={search.inn.error} />
+                iserror={search.inn.error ? 1 : 0} />
               <CSSTransition nodeRef={refINN} in={search.inn.error} timeout={200} classNames="my-node" unmountOnExit>
                 <ErrorSearch ref={refINN}>Введите корректные данные</ErrorSearch>
               </CSSTransition>
@@ -308,8 +308,8 @@ const Search = () => {
   )
 }
 
-const RedStar = styled.span<{ isError?: boolean }>`
-  ${p => p.isError && css`
+const RedStar = styled.span<{ isError?: number }>`
+  ${p => p.isError === 1 && css`
     color: #FF5959;
   `}
 `
@@ -446,7 +446,7 @@ const SelectStyled = styled(Select)`
   }
 `
 
-const InputStyled = styled(Input) <{ iserror: boolean }>`
+const InputStyled = styled(Input) <{ iserror: number }>`
   width: 242px;
   text-align: center;
   padding: 8.5px 11px;
@@ -456,7 +456,7 @@ const InputStyled = styled(Input) <{ iserror: boolean }>`
     width: 100%;
   }
 
-  ${p => p.iserror === true && css`
+  ${p => p.iserror === 1 && css`
     border-color: #FF5959;
     box-shadow: 0px 0px 20px rgba(255, 89, 89, 0.2);
   `}

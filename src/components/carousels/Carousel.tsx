@@ -74,16 +74,20 @@ const Carousel = () => {
 }
 
 interface CustomArrowPropsWithChildren extends CustomArrowProps {
-  children: JSX.Element
+  children: JSX.Element,
+  costumnStyle?: React.CSSProperties
 }
 
-const SampleSlickArrow = (props: CustomArrowPropsWithChildren) => {
-  const { className, style, onClick } = props
+export const SampleSlickArrow = (props: CustomArrowPropsWithChildren) => {
+  const { className, style, onClick, costumnStyle } = props
+
+  console.log(style, costumnStyle);
+
   return (
     <div
       className={className}
       onClick={onClick}
-      style={{ ...style, width: "39px", height: "39px" }}
+      style={{ ...costumnStyle }}
     >
       {props.children}
     </div>
@@ -103,13 +107,13 @@ const SlideContent = styled.div`
   box-sizing: border-box;
 `
 
-const ArrowLeft = styled.div`
+export const ArrowLeft = styled.div`
   width: 39px;
   height: 39px;
   background-image: url(${IMAGEPATH + "arrow.svg"});
 `
 
-const ArrowRight = styled(ArrowLeft)`
+export const ArrowRight = styled(ArrowLeft)`
   transform: rotate(180deg);
 `
 

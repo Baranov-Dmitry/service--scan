@@ -2,7 +2,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { BLUE, IMAGEPATH, ORANGE, TURQUOISE } from '../../constants/valiables'
 import { adaptiveSize } from '../../constants/helperFunctions';
-import Carousel from '../../components/carousel/Carousel';
+import Carousel from '../../components/carousels/Carousel';
 import { useAppSelector } from '../../store/hooks';
 import { NavLink } from 'react-router-dom';
 
