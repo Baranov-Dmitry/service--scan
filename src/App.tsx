@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouteObject, useNavigate, useRoutes } from 'react-router-dom';
+import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
 import Footer from './components/footer/Footer';
 import Header from './components/header/Header';
@@ -9,10 +9,15 @@ import Result from './pages/result/Result';
 import Search from './pages/search/Search';
 import { useAppSelector } from './store/hooks';
 
-const ProtectedRoute = ({ children, to, isNavigate }: { children: any, to: string, isNavigate: boolean }) => {
-  const navigate = useNavigate()
+type Props = {
+  children: JSX.Element
+  to: string
+  isNavigate: boolean
+}
+
+const ProtectedRoute = ({ children, to, isNavigate }: Props) => {
   if (isNavigate) {
-    navigate(to)
+    return <Navigate to={to} />;
   } else {
     return children;
   }
@@ -37,9 +42,7 @@ function App() {
     },
     {
       path: '/result',
-      element: (
-        <ProtectedRoute to='/auth' isNavigate={accessToken === ""}><Result /></ProtectedRoute>
-      ),
+      element: <ProtectedRoute to='/auth' isNavigate={accessToken === ""}><Result /></ProtectedRoute>,
     },
     {
       path: '/search',

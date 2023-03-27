@@ -50,14 +50,14 @@ const AuthForm = () => {
 
     } catch (error) {
       console.log("error", error)
-      setAuthData(prev => ({ ...prev, password: "" }))
+      setAuthData(prev => ({ login: "", password: "" }))
     }
   }
 
   return (
     <form onSubmit={handleSubmit}>
 
-      <InputContainer marginBottomZero={loginErr ? 1 : 0}>
+      <InputContainer marginbottomzero={loginErr ? 1 : 0}>
 
         <Label htmlFor={inputID + "login"}>Логин или номер телефона:</Label>
 
@@ -66,7 +66,6 @@ const AuthForm = () => {
           value={authData.login ?? ""}
           onChange={e => setAuthData(prev => ({ ...prev, login: e.target.value }))}
           type="text"
-          marginBottomZero={loginErr ? 1 : 0}
         />
 
         {loginErr && <ErrorInput>Введите корректные данные</ErrorInput>}
@@ -74,7 +73,7 @@ const AuthForm = () => {
       </InputContainer>
 
 
-      <InputContainer marginBottomZero={passwordErr ? 1 : 0}>
+      <InputContainer marginbottomzero={passwordErr ? 1 : 0}>
 
         <Label htmlFor={inputID + "password"}>Пароль:</Label>
 
@@ -83,7 +82,6 @@ const AuthForm = () => {
           value={authData.password ?? ""}
           onChange={e => setAuthData(prev => ({ ...prev, password: e.target.value }))}
           type="text"
-          marginBottomZero={loginErr ? 1 : 0}
         />
 
         {passwordErr && <ErrorInput>Неправильный пароль</ErrorInput>}
@@ -171,7 +169,7 @@ const LogInServices = styled.div`
   }
 `
 
-const InputSt = styled(Input) <{ marginBottomZero: number }>`
+const InputSt = styled(Input)`
   width: 100%;
   height: 43px;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.05);
@@ -181,16 +179,16 @@ const InputSt = styled(Input) <{ marginBottomZero: number }>`
   
 `
 
-const InputContainer = styled.div <{ marginBottomZero: number }>`
+const InputContainer = styled.div <{ marginbottomzero: number }>`
   margin: 15px 0 20px;
-  ${p => p.marginBottomZero === 1 ? css`
+  ${p => p.marginbottomzero === 1 ? css`
     margin-bottom: 0;
     color: red;
     border-color: red;
   ` : null}
 `
 
-const InputPassword = styled(Input.Password) <{ marginBottomZero: number }>`
+const InputPassword = styled(Input.Password)`
   width: 100%;
   height: 43px;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.05);
