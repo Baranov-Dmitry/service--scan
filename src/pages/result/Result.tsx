@@ -1,12 +1,13 @@
-import { Carousel, Col, Row } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Row } from 'antd'
+import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import SeatchCarousel from '../../components/carousels/SeatchCarousel'
+import SeatchCarousel from '../../components/carousels/ResultCarousel'
 import { Loading } from '../../components/header/Header'
 import ResultItem from '../../components/ResultItem/ResultItem'
 import { IMAGEPATH } from '../../constants/valiables'
-import { useAppSelector } from '../../store/hooks'
+import { countUsagePlus } from '../../redusers/authSlice'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { SearchState } from '../search/Search'
 
 interface AnalyticsIntervalPoint {
@@ -48,10 +49,6 @@ interface Fail {
   }
 }
 
-// interface DocumentAuthor {
-//   name: string
-// }
-
 interface DocumentSource {
   id: number
   name: string
@@ -86,6 +83,7 @@ const Result = () => {
     posts: [],
     lastLoadedPost: 0
   })
+  const dispatch = useAppDispatch()
 
   const [isLoadingMore, setIsLoadingMore] = useState(false)
 
@@ -128,8 +126,10 @@ const Result = () => {
 
       // const histogramData = await responseHistogram.json() as { data: AnalyticsHistogramData[] }
       // const data = await responseObjectSearch.json() as { items: SearchResultItem[], mappings: any }
+
       setHistogramData(histogramData.data)
       setObjectSearch(objectSearchData.items.slice(1, 50))
+      dispatch(countUsagePlus())
 
     } catch (error) {
 
@@ -362,8 +362,6 @@ const ResultCaruselLoading = styled.div`
   }
 `
 
-
-
 const ResultList = styled.div`
   display: flex;
   flex-direction: row;
@@ -415,43 +413,6 @@ const ResultListWrap = styled.div`
   align-items: center;
   margin-top: 10px;
 
-`
-
-const ResultCaruselItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  align-items: center;
-  position: relative;
-  margin-right: 5px;
-
-  span {
-    padding: 17px 22px 12px 16px;
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 22px;
-    letter-spacing: 0.02em;
-    color: #000000;
-  }
-
-  span:last-child {
-    padding: 11px 22px 19px 16px;
-  }
-
-  &::after {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 15px;
-    right: 0;
-    width: 2px;
-    height: calc(100% - 30px);
-    background-color: rgba(148, 148, 148, 0.4);
-  }
-
-  
 `
 
 const ResultCaruselWrap = styled.div`

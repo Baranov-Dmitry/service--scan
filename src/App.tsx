@@ -1,19 +1,20 @@
-import React, { useEffect } from 'react';
-import { Navigate, RouteObject, useNavigate, useRoutes } from 'react-router-dom';
+import React from 'react';
+import { RouteObject, useNavigate, useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
 import Footer from './components/footer/Footer';
 import Header from './components/header/Header';
-import { getFromLocalStorage } from './constants/helperFunctions';
 import Auth from './pages/auth/Auth';
 import Main from './pages/main/Main';
 import Result from './pages/result/Result';
 import Search from './pages/search/Search';
-import { AccessData, getFiltersInfoAsync, setToken } from './redusers/authSlice';
-import { useAppDispatch, useAppSelector } from './store/hooks';
+import { useAppSelector } from './store/hooks';
 
 const ProtectedRoute = ({ children, to, isNavigate }: { children: any, to: string, isNavigate: boolean }) => {
+  const navigate = useNavigate()
   if (isNavigate) {
-    return <Navigate to={to} />;
+    console.log("Навигейт", to)
+    navigate(to)
+    // return <Navigate to={to} />;
   } else {
     return children;
   }
@@ -33,7 +34,7 @@ function App() {
     {
       path: '/auth',
       element: (
-        <ProtectedRoute to='/search' isNavigate={!!accessToken}><Auth /></ProtectedRoute>
+        <Auth />
       ),
     },
     {
@@ -51,17 +52,6 @@ function App() {
   ];
 
   const elements = useRoutes(routes)
-
-  // useEffect(() => {
-  //   console.log("App useEffect:")
-  //   const accessData = getFromLocalStorage("accessData") as (AccessData | undefined)
-  //   if (!accessData) return
-
-  //   dispatch(setToken({ ...accessData }))
-  //   dispatch(getFiltersInfoAsync(accessData.accessToken))
-
-  // }, [])
-
 
   return (
     <>

@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
 import styled, { css } from 'styled-components'
 import { GREEN, IMAGEPATH, TURQUOISE } from '../../constants/valiables'
@@ -20,8 +20,8 @@ const Header = () => {
 
   const itemsMenu = [
     { name: "Главная", link: "/" },
-    { name: "Тарифы", link: "/" },
-    { name: "FAQ", link: "/" },
+    { name: "Тарифы", link: "" },
+    { name: "FAQ", link: "" },
   ]
 
   const handeClose = useCallback(() => {
@@ -99,7 +99,13 @@ interface UserHeaderDataProp { loading?: boolean, popUp?: boolean, usedCompanyCo
 
 const UserHeaderData = ({ loading = false, popUp = false, usedCompanyCount, companyLimit, }: UserHeaderDataProp) => {
 
+  const navigate = useNavigate()
   const dispatch = useDispatch()
+
+  const handleLogOut = () => {
+    dispatch(logOut())
+    navigate("/")
+  }
 
   return (
     <>
@@ -119,7 +125,7 @@ const UserHeaderData = ({ loading = false, popUp = false, usedCompanyCount, comp
           <UserLogOut
             colorBg={popUp ? "inherit" : "white"}
             color={popUp ? "white" : "rgba(0, 0, 0, 0.7);"}
-            onClick={() => dispatch(logOut())}>
+            onClick={handleLogOut}>
             Выйти
           </UserLogOut>
         </ContainerFlex>
@@ -132,7 +138,16 @@ const UserHeaderData = ({ loading = false, popUp = false, usedCompanyCount, comp
 const GetMenuItems = ({ items, popUp, handeClose }: { items: MenuItem[], popUp?: boolean, handeClose?: () => void }) => {
   return (
     <>
-      {items.map(item => <li key={item.name}><NavLinkSt color={!popUp ? "#fff" : "#000"} onClick={handeClose} to={item.link}>{item.name}</NavLinkSt></li>)}
+      {items.map(item =>
+        <li key={item.name}>
+          {item.link !== ""
+            ? < NavLinkSt color={!popUp ? "#fff" : "#000"} onClick={handeClose} to={item.link}>
+              {item.name}
+            </NavLinkSt>
+            : item.name
+          }
+        </li>)
+      }
     </>
   )
 }

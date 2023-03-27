@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Tabs } from 'antd';
 import { GREEN, IMAGEPATH } from '../../constants/valiables';
-import AuthForm from '../../components/forms/AuthForm';
+import AuthForm from '../../components/forms/authForm/AuthForm';
 
 
 // const authObj = {

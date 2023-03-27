@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import type { Settings, CustomArrowProps } from '@ant-design/react-slick';
 import { IMAGEPATH } from '../../constants/valiables';
 
-const Carousel = () => {
+const CarouselMain = () => {
 
   const settings: Settings = useMemo(() => ({
     infinite: true,
@@ -13,8 +13,8 @@ const Carousel = () => {
     slidesToScroll: 1,
     arrows: true,
     // adaptiveHeight: true,
-    prevArrow: <SampleSlickArrow style={{ width: "39px", height: "39px", transform: "translate(0, -50%)" }}><ArrowLeft /></SampleSlickArrow>,
-    nextArrow: <SampleSlickArrow style={{ width: "39px", height: "39px", transform: "translate(0, -50%)" }}><ArrowRight /></SampleSlickArrow>,
+    prevArrow: <SampleSlickArrow costumnStyle={{ width: "39px", height: "39px", }}><ArrowLeft /></SampleSlickArrow>,
+    nextArrow: <SampleSlickArrow costumnStyle={{ width: "39px", height: "39px", }}><ArrowRight /></SampleSlickArrow>,
     responsive: [
       {
         breakpoint: 1024,
@@ -33,42 +33,42 @@ const Carousel = () => {
 
   return (
     <SlickCarousel {...settings}>
-      <Slide>
+      <div>
         <SlideContent>
           <img src="./images/FeacureClock.svg" alt="" />
           <h3>Высокая и оперативная скорость обработки заявки</h3>
         </SlideContent>
-      </Slide>
-      <Slide>
+      </div>
+      <div>
         <SlideContent>
           <img src="./images/FeaturedSearch.svg" alt="" />
           <h3>Огромная комплексная база данных, обеспечивающая объективный ответ на запрос</h3>
         </SlideContent>
-      </Slide>
-      <Slide>
+      </div>
+      <div>
         <SlideContent>
           <img src="./images/FeaturedDef.svg" alt="" />
           <h3>Высокая и оперативная скорость обработки заявки</h3>
         </SlideContent>
-      </Slide>
-      <Slide>
+      </div>
+      <div>
         <SlideContent>
           <img src="./images/FeacureClock.svg" alt="" />
           <h3>Высокая и оперативная скорость обработки заявки</h3>
         </SlideContent>
-      </Slide>
-      <Slide>
+      </div>
+      <div>
         <SlideContent>
           <img src="./images/FeaturedSearch.svg" alt="" />
           <h3>Огромная комплексная база данных, обеспечивающая объективный ответ на запрос</h3>
         </SlideContent>
-      </Slide>
-      <Slide>
+      </div>
+      <div>
         <SlideContent>
           <img src="./images/FeaturedDef.svg" alt="" />
           <h3>Высокая и оперативная скорость обработки заявки</h3>
         </SlideContent>
-      </Slide>
+      </div>
     </SlickCarousel>
   )
 }
@@ -79,9 +79,7 @@ interface CustomArrowPropsWithChildren extends CustomArrowProps {
 }
 
 export const SampleSlickArrow = (props: CustomArrowPropsWithChildren) => {
-  const { className, style, onClick, costumnStyle } = props
-
-  console.log(style, costumnStyle);
+  const { className, onClick, costumnStyle } = props
 
   return (
     <div
@@ -93,10 +91,6 @@ export const SampleSlickArrow = (props: CustomArrowPropsWithChildren) => {
     </div>
   )
 }
-
-const Slide = styled.div`
-  
-`
 
 const SlideContent = styled.div`
   margin: 20px 15px;
@@ -117,4 +111,4 @@ export const ArrowRight = styled(ArrowLeft)`
   transform: rotate(180deg);
 `
 
-export default Carousel
+export default CarouselMain

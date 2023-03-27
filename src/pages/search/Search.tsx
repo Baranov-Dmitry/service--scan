@@ -2,7 +2,6 @@ import { Checkbox, DatePicker, Input, InputNumber, Select } from 'antd';
 import React, { useId, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components';
 import { compareDates, validateInn } from '../../constants/helperFunctions';
-import { useAppSelector } from '../../store/hooks';
 import dayjs from 'dayjs'
 import { debounce } from "lodash";
 import { CSSTransition } from 'react-transition-group';
@@ -36,7 +35,6 @@ export interface SearchState {
 const Search = () => {
 
   const id = useId()
-  const authData = useAppSelector((state) => state.auth)
   const navigate = useNavigate()
   const [search, setSearch] = useState<SearchState>({
     dates: {

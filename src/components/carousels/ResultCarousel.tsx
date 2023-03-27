@@ -2,13 +2,13 @@ import React from 'react'
 import { Carousel } from 'antd'
 import { AnalyticsHistogramData } from '../../pages/result/Result'
 import styled from 'styled-components'
-import { ArrowLeft, ArrowRight, SampleSlickArrow } from './Carousel'
+import { ArrowLeft, ArrowRight, SampleSlickArrow } from './CarouselMain'
 
 interface Props {
   histogram: AnalyticsHistogramData[]
 }
 
-const SeatchCarousel: React.FC<Props> = ({ histogram }) => {
+const ResultCarousel: React.FC<Props> = ({ histogram }) => {
 
   const options = {
     infinite: false,
@@ -21,13 +21,13 @@ const SeatchCarousel: React.FC<Props> = ({ histogram }) => {
       top: "45%",
       width: "39px",
       height: "39px",
-    }}><SearchArrowLeft /></SampleSlickArrow>,
+    }}><ArrowLeft /></SampleSlickArrow>,
     nextArrow: <SampleSlickArrow costumnStyle={{
       left: "calc(100% + 8px)",
       top: "45%",
       width: "39px",
       height: "39px",
-    }}><SearchArrowRight /></SampleSlickArrow>,
+    }}><ArrowRight /></SampleSlickArrow>,
     useCSS: true,
     // adaptiveHeight: true,
     responsive: [
@@ -46,13 +46,13 @@ const SeatchCarousel: React.FC<Props> = ({ histogram }) => {
             top: "45%",
             width: "39px",
             height: "39px",
-          }}><SearchArrowLeft /></SampleSlickArrow>,
+          }}><ArrowLeft /></SampleSlickArrow>,
           nextArrow: <SampleSlickArrow costumnStyle={{
             left: "100%",
             top: "40%",
             width: "39px",
             height: "39px",
-          }}><SearchArrowRight /></SampleSlickArrow>,
+          }}><ArrowRight /></SampleSlickArrow>,
         }
       }
     ]
@@ -63,7 +63,7 @@ const SeatchCarousel: React.FC<Props> = ({ histogram }) => {
       {histogram[0].data.map((dataFild, index) => {
         const date = new Date(dataFild.date).toLocaleDateString("en-US")
         // date.replaceAll("/", ".")
-        return (<div><ResultCaruselItem key={dataFild.date}>
+        return (<div key={dataFild.date}><ResultCaruselItem>
           <span>{date.replaceAll("/", ".")}</span>
           <span>{dataFild.value}</span>
           <span>{histogram[1].data[index].value}</span>
@@ -72,14 +72,6 @@ const SeatchCarousel: React.FC<Props> = ({ histogram }) => {
     </Carousel>
   )
 }
-
-const SearchArrowLeft = styled(ArrowLeft)`
-  
-`
-
-const SearchArrowRight = styled(ArrowRight)`
-  
-`
 
 const ResultCaruselItem = styled.div`
   display: flex;
@@ -127,4 +119,4 @@ const ResultCaruselItem = styled.div`
   }
 `
 
-export default SeatchCarousel
+export default ResultCarousel

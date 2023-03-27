@@ -1,10 +1,11 @@
 import React, { useId, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { getFiltersInfoAsync, setToken, AccessData } from '../../redusers/authSlice';
-import { checkPhone } from '../../constants/helperFunctions';
-import { IMAGEPATH } from '../../constants/valiables';
+import { getFiltersInfoAsync, setToken, AccessData } from '../../../redusers/authSlice';
+import { checkPhone } from '../../../constants/helperFunctions';
+import { IMAGEPATH } from '../../../constants/valiables';
 import styled, { css } from 'styled-components';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch } from '../../../store/hooks';
+import { Input } from 'antd';
 
 const AuthForm = () => {
 
@@ -38,9 +39,9 @@ const AuthForm = () => {
 
       if (response.ok) {
         const token = await response.json() as AccessData
+        navigate("/")
         dispatch(setToken({ ...token }))
         dispatch(getFiltersInfoAsync(token.accessToken))
-        navigate("/search")
       } else {
 
         throw new Error("Failed to login");
@@ -56,27 +57,39 @@ const AuthForm = () => {
   return (
     <form onSubmit={handleSubmit}>
 
-      <Label htmlFor={inputID + "login"}>Логин или номер телефона:</Label>
-      <Input
-        id={inputID + "login"}
-        value={authData.login ?? ""}
-        onChange={e => setAuthData(prev => ({ ...prev, login: e.target.value }))}
-        type="text"
-        marginBottomZero={loginErr}
-      />
+      <InputContainer marginBottomZero={loginErr ? 1 : 0}>
 
-      {loginErr && <ErrorInput>Введите корректные данные</ErrorInput>}
+        <Label htmlFor={inputID + "login"}>Логин или номер телефона:</Label>
 
-      <Label htmlFor={inputID + "password"}>Пароль:</Label>
-      <Input
-        id={inputID + "password"}
-        value={authData.password ?? ""}
-        onChange={e => setAuthData(prev => ({ ...prev, password: e.target.value }))}
-        type="text"
-        marginBottomZero={passwordErr}
-      />
+        <InputSt
+          id={inputID + "login"}
+          value={authData.login ?? ""}
+          onChange={e => setAuthData(prev => ({ ...prev, login: e.target.value }))}
+          type="text"
+          marginBottomZero={loginErr ? 1 : 0}
+        />
 
-      {passwordErr && <ErrorInput>Неправильный пароль</ErrorInput>}
+        {loginErr && <ErrorInput>Введите корректные данные</ErrorInput>}
+
+      </InputContainer>
+
+
+      <InputContainer marginBottomZero={passwordErr ? 1 : 0}>
+
+        <Label htmlFor={inputID + "password"}>Пароль:</Label>
+
+        <InputPassword
+          id={inputID + "password"}
+          value={authData.password ?? ""}
+          onChange={e => setAuthData(prev => ({ ...prev, password: e.target.value }))}
+          type="text"
+          marginBottomZero={loginErr ? 1 : 0}
+        />
+
+        {passwordErr && <ErrorInput>Неправильный пароль</ErrorInput>}
+
+      </InputContainer>
+
       <ButSubmit disabled={!isActiveButtom} type='submit'>Войти</ButSubmit>
 
       <PasswordReset>Восстановить пароль</PasswordReset>
@@ -158,21 +171,34 @@ const LogInServices = styled.div`
   }
 `
 
-const Input = styled.input<{ marginBottomZero: boolean }>`
+const InputSt = styled(Input) <{ marginBottomZero: number }>`
   width: 100%;
   height: 43px;
-  border: 1px solid #C7C7C7;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.05);
-  border-radius: 5px;
   padding: 0 10px;
-  margin: 15px 0 20px;
   box-sizing: border-box;
   font-size: 20px;
-  ${p => p.marginBottomZero === true ? css`
+  
+`
+
+const InputContainer = styled.div <{ marginBottomZero: number }>`
+  margin: 15px 0 20px;
+  ${p => p.marginBottomZero === 1 ? css`
     margin-bottom: 0;
     color: red;
     border-color: red;
   ` : null}
+`
+
+const InputPassword = styled(Input.Password) <{ marginBottomZero: number }>`
+  width: 100%;
+  height: 43px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.05);
+  padding: 0 10px;
+  
+  box-sizing: border-box;
+  font-size: 20px;
+  
 `
 
 const Label = styled.label`

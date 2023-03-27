@@ -72,6 +72,10 @@ export const authSlice = createSlice({
 
     setInfo(state, action: PayloadAction<eventFiltersInfo>) {
       state.eventFiltersInfo = action.payload.eventFiltersInfo
+    },
+
+    countUsagePlus(state) {
+      state.countUsage += 1
     }
   },
 
@@ -94,6 +98,6 @@ export const authSlice = createSlice({
   },
 })
 
-export const { logOut, setToken, setInfo } = authSlice.actions
+export const { logOut, setToken, setInfo, countUsagePlus } = authSlice.actions
 
 export default authSlice.reducer

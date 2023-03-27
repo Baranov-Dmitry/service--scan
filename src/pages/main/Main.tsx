@@ -2,7 +2,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { BLUE, IMAGEPATH, ORANGE, TURQUOISE } from '../../constants/valiables'
 import { adaptiveSize } from '../../constants/helperFunctions';
-import Carousel from '../../components/carousels/Carousel';
+import Carousel from '../../components/carousels/CarouselMain';
 import { useAppSelector } from '../../store/hooks';
 import { NavLink } from 'react-router-dom';
 
@@ -24,9 +24,9 @@ const Main = () => {
             Комплексный анализ публикаций, получение данных <br />
             в формате PDF на электронную почту.
           </Text>
-          <ButtonRequest to="/search">
+          {accessToken && <ButtonRequest to="/search">
             Запросить данные
-          </ButtonRequest>
+          </ButtonRequest>}
         </TextContainer>
         <Image></Image>
       </MainArticle>
