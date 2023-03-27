@@ -12,9 +12,7 @@ import { useAppSelector } from './store/hooks';
 const ProtectedRoute = ({ children, to, isNavigate }: { children: any, to: string, isNavigate: boolean }) => {
   const navigate = useNavigate()
   if (isNavigate) {
-    console.log("Навигейт", to)
     navigate(to)
-    // return <Navigate to={to} />;
   } else {
     return children;
   }
