@@ -91,3 +91,15 @@ export const compareDates = (d1: string, d2: string): "first" | "second" | "equa
     return "equal"
   }
 };
+
+export const fetchUrl = (url: string, body: {}, accessToken: string) => {
+  return fetch(url, {
+    method: "post",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + accessToken,
+    },
+    body: JSON.stringify(body)
+  })
+}

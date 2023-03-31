@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Carousel from '../../components/carousels/CarouselMain';
 import { ORANGE, TURQUOISE } from '../../constants/valiables';
 import { useAppSelector } from '../../store/hooks';

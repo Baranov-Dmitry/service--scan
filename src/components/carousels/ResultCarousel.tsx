@@ -1,8 +1,8 @@
 import React from 'react'
 import { Carousel } from 'antd'
-import { AnalyticsHistogramData } from '../../pages/result/Result'
 import styled from 'styled-components'
 import { ArrowLeft, ArrowRight, SampleSlickArrow } from './CarouselMain'
+import { AnalyticsHistogramData } from '../../redusers/histogramSlice'
 
 interface Props {
   histogram: AnalyticsHistogramData[]

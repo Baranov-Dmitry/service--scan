@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../redusers/authSlice";
+import histogramSlice from "../redusers/histogramSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    histogram: histogramSlice,
   },
 });
 

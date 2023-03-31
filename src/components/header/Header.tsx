@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
 import { GREEN } from '../../constants/valiables'
 import { logOut } from '../../redusers/authSlice'
+import { unsetHistogram } from '../../redusers/histogramSlice'
 import { useAppSelector } from '../../store/hooks'
 import {
   HeaderWrap, LeftContent, Logo, Menu, ButtonMobileMenu,
@@ -109,6 +110,7 @@ const UserHeaderData = ({ loading = false, popUp = false, usedCompanyCount, comp
 
   const handleLogOut = () => {
     dispatch(logOut())
+    dispatch(unsetHistogram())
     navigate("/")
   }
 

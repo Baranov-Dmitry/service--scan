@@ -6,6 +6,8 @@ import { debounce } from "lodash";
 import { CSSTransition } from 'react-transition-group';
 import { useNavigate } from 'react-router-dom';
 import { SearchContainer, SearchLeft, SearchLeftText, SearchLeftTitle, SearchLeftForm, InputsContainer, InputContainer, Label, RedStar, InputStyled, ErrorSearch, SelectStyled, InputNumberStyled, DatePickerContainer, DatePickerStyled, CheckBoxContainer, TextUnderButton, ButtonSubmit, SearchRight } from './Search.Styled';
+import { useAppDispatch } from '../../store/hooks';
+import { getHistogramAsync, getPostsAsync } from '../../redusers/histogramSlice';
 
 type SelectTonality = "any" | "negative" | "positive"
 
@@ -36,6 +38,7 @@ const Search = () => {
 
   const id = useId()
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   const [search, setSearch] = useState<SearchState>({
     dates: {
       startDate: "",
@@ -80,8 +83,66 @@ const Search = () => {
       return
     }
 
-    navigate("/result", { state: search })
+    const body = {
+      issueDateInterval: {
+        startDate: search.dates.startDate,
+        endDate: search.dates.endDate
+      },
+      searchContext: {
+        targetSearchEntitiesContext: {
+          targetSearchEntities: [
+            {
+              type: "company",
+              sparkId: null,
+              entityId: null,
+              inn: search.inn.text,
+              maxFullness: search.maxFullness,
+              inBusinessNews: search.inBusinessNews === false ? null : true
+            }
+          ],
+          onlyMainRole: search.onlyMainRole,
+          tonality: search.tonality,
+          onlyWithRiskFactors: search.onlyWithRiskFactors,
+          riskFactors: {
+            and: [],
+            or: [],
+            not: []
+          },
+          themes: {
+            "and": [],
+            "or": [],
+            "not": []
+          }
+        },
+        themesFilter: {
+          "and": [],
+          "or": [],
+          "not": []
+        }
+      },
+      searchArea: {
+        includedSources: [],
+        excludedSources: [],
+        includedSourceGroups: [],
+        excludedSourceGroups: []
+      },
+      attributeFilters: {
+        excludeTechNews: !search.excludeTechNews,
+        excludeAnnouncements: !search.excludeAnnouncements,
+        excludeDigests: !search.excludeDigests
+      },
+      similarMode: "duplicates",
+      limit: search.limit,
+      sortType: "sourceInfluence",
+      sortDirectionType: "desc",
+      intervalType: "month",
+      histogramTypes: [
+        "totalDocuments",
+        "riskFactors"
+      ]
+    }
 
+    navigate("/result", { state: body })
   }
 
   const handleInn = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -3,7 +3,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IMAGEPATH } from '../../constants/valiables';
-import { ScanDoc } from '../../pages/result/Result';
+import { ScanDoc } from '../../redusers/histogramSlice';
 
 const ResultItem = ({ typedPost }: { typedPost: ScanDoc }) => {
 
@@ -176,6 +176,7 @@ const ResultItemSt = styled.div`
   width: calc(50% - 15px);
   box-sizing: border-box;
   overflow: hidden;
+  align-self: flex-start;
 
   @media (max-width: 900px) {
     width: 100%;
