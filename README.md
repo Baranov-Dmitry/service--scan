@@ -1,6 +1,3 @@
-#Gif example
-AnimationExample.gif
-
 «СКАН» — система управления репутацией, созданная ведущим российским информационным агентством «Интерфакс». Сервис предназначен для менеджеров по PR, коммуникациям и специалистов по рискам и безопасности. Решает широкий спектр задач, связанных с медиааналитикой.
 
 Система анализирует материалы СМИ и социальные медиа, оповещает о новых публикациях в режиме реального времени, автоматически формирует аналитические отчёты по любым запросам и инфоповодам, а также позволяет прогнозировать репутационные и экономические риски, связанные с партнёрами и контрагентами.
@@ -16,7 +13,12 @@ AnimationExample.gif
 
 [Макет сайта в figma](https://www.figma.com/file/u3MOjzYnTnirz712GrLbFv/%D0%9C%D0%B0%D0%BA%D0%B5%D1%82-%D0%A1%D0%9A%D0%90%D0%9D?node-id=0-1&t=Cy1BF6b76dS4G8er-0)
 
+Описания работы сайта:
+Не автаризованному пользователю доступны главная страница и страница входа, после авторизации с главной страницы можно перейти на страницу поиска.
+После ввода данных открываеться страница с результатами и первыми 10 постами, по клику на кнопку внизу "Показать больше" загружаются следующиие 10.
 
+#Gif example
+![](https://github.com/Baranov-Dmitry/service--scan/AnimationExample.gif)
 
 ## Available Scripts
 
@@ -44,13 +46,3 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
