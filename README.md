@@ -18,7 +18,7 @@
 После ввода данных открываеться страница с результатами и первыми 10 постами, по клику на кнопку внизу "Показать больше" загружаются следующиие 10.
 
 #Gif example
-![](https://github.com/Baranov-Dmitry/service--scan/AnimationExample.gif)
+![](https://github.com/Baranov-Dmitry/service--scan/blob/master/AnimationExample.gif)
 
 ## Available Scripts
 
