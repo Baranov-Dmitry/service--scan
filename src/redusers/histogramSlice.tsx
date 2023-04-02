@@ -69,8 +69,7 @@ export type loadingState = "idle" | "pending" | "succeeded" | "failed";
 
 export const getHistogramAsync = createAsyncThunk<
   // Return type of the payload creator
-  | { histogram: AnalyticsHistogramData[]; objectSearch: SearchResultItem[] }
-  | undefined,
+  { histogram: AnalyticsHistogramData[]; objectSearch: SearchResultItem[] },
   // First argument to the payload creator
   object,
   {
@@ -82,35 +81,30 @@ export const getHistogramAsync = createAsyncThunk<
   const url = "https://gateway.scan-interfax.ru/api/v1/";
   const accessToken = thunkAPI.getState().auth.accessToken;
 
-  try {
-    const [responseHistogram, responseObjectSearch] = await Promise.all([
-      fetchUrl(url + "objectsearch/histograms", body, accessToken),
-      fetchUrl(url + "objectsearch", body, accessToken),
-    ]);
+  if (!accessToken) throw new Error("Something went wrong with loading new posts");
 
-    if (!responseHistogram.ok || !responseObjectSearch.ok) {
-      throw new Error("Something went wrong");
-    }
+  const [responseHistogram, responseObjectSearch] = await Promise.all([
+    fetchUrl(url + "objectsearch/histograms", body, accessToken),
+    fetchUrl(url + "objectsearch", body, accessToken),
+  ]);
 
-    const [histogramData, objectSearchData]: [
-      { data: AnalyticsHistogramData[] },
-      { items: SearchResultItem[]; mappings: any }
-    ] = await Promise.all([
-      responseHistogram.json(),
-      responseObjectSearch.json(),
-    ]);
-
-    // thunkAPI.dispatch(getPostsAsync())
-
-    return {
-      histogram: histogramData.data,
-      objectSearch: objectSearchData.items,
-    };
-  } catch (error) {
-    console.log("Error: ", error);
+  if (!responseHistogram.ok || !responseObjectSearch.ok) {
+    throw new Error("Something went wrong with loading new posts");
   }
 
-  return undefined;
+  const [histogramData, objectSearchData]: [
+    { data: AnalyticsHistogramData[] },
+    { items: SearchResultItem[]; mappings: any }
+  ] = await Promise.all([
+    responseHistogram.json(),
+    responseObjectSearch.json(),
+  ]);
+
+  return {
+    histogram: histogramData.data,
+    objectSearch: objectSearchData.items,
+  };
+
 });
 
 export const getPostsAsync = createAsyncThunk<
@@ -193,7 +187,7 @@ export const histogramSlice = createSlice({
     });
 
     builder.addCase(getHistogramAsync.fulfilled,
-      (state, action: PayloadAction<undefined | { histogram: AnalyticsHistogramData[], objectSearch: SearchResultItem[] }>) => {
+      (state, action: PayloadAction<{ histogram: AnalyticsHistogramData[], objectSearch: SearchResultItem[] }>) => {
         if (action.payload === undefined) return;
         console.log(action.payload.histogram)
         return {

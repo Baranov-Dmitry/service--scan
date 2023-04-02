@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Row } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 import SeatchCarousel from '../../components/carousels/ResultCarousel'
@@ -8,8 +8,7 @@ import { countUsagePlus } from '../../redusers/authSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { SearchState } from '../search/Search'
 import { ButtonLoadMore, ResultCarusel, ResultCaruselDetails, ResultCaruselLoading, ResultCaruselWrap, ResultContainer, ResultList, ResultListTitle, ResultListWrap, ResultLogo, ResultTextLogoContainer, ResultTextTitle, ResultTextTitleSmall, ResultTimeline, ResultTimelineDetails, ResultTimelineTitle } from './Result.Styled'
-import { fetchUrl } from '../../constants/helperFunctions'
-import { AnalyticsHistogramData, getHistogramAsync, getPostsAsync, ScanDoc, SearchResultItem } from '../../redusers/histogramSlice'
+import { getHistogramAsync, getPostsAsync, ScanDoc } from '../../redusers/histogramSlice'
 
 const Result = () => {
 
