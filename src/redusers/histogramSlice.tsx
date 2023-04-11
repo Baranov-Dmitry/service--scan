@@ -132,8 +132,6 @@ export const getPostsAsync = createAsyncThunk<
 
   const end = (start + POSTSPERLOAD) < objectSearch.length ? start + POSTSPERLOAD : objectSearch.length
 
-  console.log(start, end)
-
   const ids = {
     ids: objectSearch.slice(start, end).map(obj => obj.encodedId)
   }
@@ -188,8 +186,8 @@ export const histogramSlice = createSlice({
 
     builder.addCase(getHistogramAsync.fulfilled,
       (state, action: PayloadAction<{ histogram: AnalyticsHistogramData[], objectSearch: SearchResultItem[] }>) => {
-        if (action.payload === undefined) return;
-        console.log(action.payload.histogram)
+        if (action.payload === undefined) return state;
+
         return {
           ...state,
           loadingHistogram: "succeeded",
@@ -199,11 +197,11 @@ export const histogramSlice = createSlice({
       }
     );
 
-    builder.addCase(getHistogramAsync.rejected, (state, action) => {
+    builder.addCase(getHistogramAsync.rejected, (state) => {
       state.loadingHistogram = 'failed';
     });
 
-    builder.addCase(getPostsAsync.pending, (state, action) => {
+    builder.addCase(getPostsAsync.pending, (state) => {
       state.loadingPosts = "pending";
     });
     builder.addCase(getPostsAsync.fulfilled, (state, action) => {
@@ -215,7 +213,7 @@ export const histogramSlice = createSlice({
       }
       return { ...state, posts: [...state.posts, ...action.payload.data], loadingPosts: loading, lastLoadedPost: action.payload.lastLoadedPost }
     });
-    builder.addCase(getPostsAsync.rejected, (state, action) => {
+    builder.addCase(getPostsAsync.rejected, (state) => {
       state.loadingPosts = "failed"
     });
   },
