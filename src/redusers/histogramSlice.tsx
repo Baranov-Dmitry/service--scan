@@ -1,71 +1,25 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchUrl } from "../constants/helperFunctions";
-import { AppDispatch, RootState, store } from "../store/store";
+import { AppDispatch, RootState } from "../store/store";
+import { AnalyticsHistogramData, Fail, loadingState, ScanDoc, SearchResultItem } from "../models/Histogram";
 
-interface AnalyticsIntervalPoint {
-  date: string;
-  value: number;
-}
+const initialState: {
+  histogramData: AnalyticsHistogramData[] | null;
+  objectSearch: SearchResultItem[] | null;
+  loadingHistogram: loadingState;
 
-export interface AnalyticsHistogramData {
-  data: AnalyticsIntervalPoint[];
-  histogramType: "totalDocuments" | "riskFactors";
-}
+  posts: Array<ScanDoc | Fail>;
+  loadingPosts: loadingState;
+  lastLoadedPost: number;
+} = {
+  histogramData: null,
+  objectSearch: null,
+  loadingHistogram: "idle",
 
-export interface SearchResultItem {
-  encodedId: string;
-  influence: number;
-  similarCount: number;
-}
-
-export interface ScanDoc {
-  ok: {
-    schemaVersion: string;
-    id: string;
-    version: number;
-    issueDate: string;
-    url: string;
-    source: DocumentSource;
-    dedupClusterId: string;
-    title: DocumentTitle;
-    content: DocumentContent;
-    attributes: DocumentAttributes;
-    language: "Russian" | "other" | "unknown";
-  };
-}
-
-export interface Fail {
-  fail: {
-    errorCode: string;
-    errorMessage: string;
-  };
-}
-
-interface DocumentSource {
-  id: number;
-  name: string;
-  categoryId: number;
-  levelId: number;
-  groupId: number;
-}
-
-interface DocumentTitle {
-  text: string;
-  markup: string;
-}
-
-interface DocumentContent {
-  markup: string;
-}
-
-interface DocumentAttributes {
-  isTechNews: boolean;
-  isAnnouncement: boolean;
-  isDigest: boolean;
-  wordCount: number;
-}
-
-export type loadingState = "idle" | "pending" | "succeeded" | "failed";
+  posts: [],
+  lastLoadedPost: 0,
+  loadingPosts: "idle",
+};
 
 export const getHistogramAsync = createAsyncThunk<
   // Return type of the payload creator
@@ -150,24 +104,6 @@ export const getPostsAsync = createAsyncThunk<
   }
 
 });
-
-const initialState: {
-  histogramData: AnalyticsHistogramData[] | null;
-  objectSearch: SearchResultItem[] | null;
-  loadingHistogram: loadingState;
-
-  posts: Array<ScanDoc | Fail>;
-  loadingPosts: loadingState;
-  lastLoadedPost: number;
-} = {
-  histogramData: null,
-  objectSearch: null,
-  loadingHistogram: "idle",
-
-  posts: [],
-  lastLoadedPost: 0,
-  loadingPosts: "idle",
-};
 
 export const histogramSlice = createSlice({
   name: "histogram",

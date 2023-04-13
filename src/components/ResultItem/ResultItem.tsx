@@ -3,7 +3,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { IMAGEPATH } from '../../constants/valiables';
-import { ScanDoc } from '../../redusers/histogramSlice';
+import { ScanDoc } from '../../models/Histogram';
 
 const ResultItem = ({ typedPost }: { typedPost: ScanDoc }) => {
 

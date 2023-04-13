@@ -6,9 +6,10 @@ import { Loading } from '../../components/header/Header.Styled'
 import ResultItem from '../../components/ResultItem/ResultItem'
 import { countUsagePlus } from '../../redusers/authSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { SearchState } from '../search/Search'
 import { ButtonLoadMore, ResultCarusel, ResultCaruselDetails, ResultCaruselLoading, ResultCaruselWrap, ResultContainer, ResultList, ResultListTitle, ResultListWrap, ResultLogo, ResultTextLogoContainer, ResultTextTitle, ResultTextTitleSmall, ResultTimeline, ResultTimelineDetails, ResultTimelineTitle } from './Result.Styled'
-import { getHistogramAsync, getPostsAsync, ScanDoc } from '../../redusers/histogramSlice'
+import { getHistogramAsync, getPostsAsync } from '../../redusers/histogramSlice'
+import { ScanDoc } from '../../models/Histogram'
+import { SearchState } from '../../models/SearchState'
 
 const Result = () => {
 

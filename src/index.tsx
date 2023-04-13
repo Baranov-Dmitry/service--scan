@@ -7,7 +7,8 @@ import './index.css';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import { getFromLocalStorage } from './constants/helperFunctions';
-import { AccessData, getFiltersInfoAsync, setToken } from './redusers/authSlice';
+import { getFiltersInfoAsync, setToken } from './redusers/authSlice';
+import { AccessData } from './models/User';
 
 const accessData = getFromLocalStorage("accessData") as (AccessData | undefined)
 

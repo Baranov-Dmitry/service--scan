@@ -5,40 +5,18 @@ import dayjs from 'dayjs'
 import { debounce } from "lodash";
 import { CSSTransition } from 'react-transition-group';
 import { useNavigate } from 'react-router-dom';
-import { SearchContainer, SearchLeft, SearchLeftText, SearchLeftTitle, SearchLeftForm, InputsContainer, InputContainer, Label, RedStar, InputStyled, ErrorSearch, SelectStyled, InputNumberStyled, DatePickerContainer, DatePickerStyled, CheckBoxContainer, TextUnderButton, ButtonSubmit, SearchRight } from './Search.Styled';
-import { useAppDispatch } from '../../store/hooks';
-import { getHistogramAsync, getPostsAsync } from '../../redusers/histogramSlice';
-
-type SelectTonality = "any" | "negative" | "positive"
-
-export interface SearchState {
-  dates: {
-    startDate: string
-    startDateError: boolean
-    endDate: string
-    endDateError: boolean
-  },
-  inn: {
-    text: string
-    error: boolean
-  },
-  tonality: SelectTonality
-  limit: number
-  isCountErr: boolean
-  inBusinessNews: boolean
-  maxFullness: boolean
-  onlyMainRole: boolean
-  onlyWithRiskFactors: boolean
-  excludeTechNews: boolean
-  excludeAnnouncements: boolean
-  excludeDigests: boolean
-}
+import {
+  SearchContainer, SearchLeft, SearchLeftText, SearchLeftTitle, SearchLeftForm,
+  InputsContainer, InputContainer, Label, RedStar, InputStyled, ErrorSearch, SelectStyled,
+  InputNumberStyled, DatePickerContainer, DatePickerStyled, CheckBoxContainer,
+  TextUnderButton, ButtonSubmit, SearchRight
+} from './Search.Styled';
+import { SearchState, SelectTonality } from '../../models/SearchState';
 
 const Search = () => {
 
   const id = useId()
   const navigate = useNavigate()
-  const dispatch = useAppDispatch()
   const [search, setSearch] = useState<SearchState>({
     dates: {
       startDate: "",

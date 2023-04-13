@@ -1,28 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { saveLocalStorage } from "../constants/helperFunctions";
-
-interface User extends AccessData, eventFiltersInfo {
-  id: string;
-  name: string;
-  countUsage: number;
-  counterLimit: number;
-}
-
-export interface AccessData {
-  accessToken: string;
-  expire: string;
-}
-
-export interface eventFiltersInfo {
-  eventFiltersInfo:
-    | {
-        usedCompanyCount: number;
-        companyLimit: number;
-      }
-    | undefined;
-  loadingInfo: "idle" | "pending" | "succeeded" | "failed";
-  error: undefined | string;
-}
+import { eventFiltersInfo, User } from "../models/User";
 
 const initialState: User = {
   id: "",

@@ -1,11 +1,12 @@
 import React, { useId, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { getFiltersInfoAsync, setToken, AccessData } from '../../../redusers/authSlice';
+import { getFiltersInfoAsync, setToken } from '../../../redusers/authSlice';
 import { checkPhone } from '../../../constants/helperFunctions';
 import { IMAGEPATH } from '../../../constants/valiables';
 import styled, { css } from 'styled-components';
 import { useAppDispatch } from '../../../store/hooks';
 import { Input } from 'antd';
+import { AccessData } from '../../../models/User';
 
 const AuthForm = () => {
 
